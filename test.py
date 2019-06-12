@@ -15,6 +15,7 @@ def search_solarsystem_number(list, input):
 	for items in list:
 		if items[1] == input:
 			return items[0]
+	return 'error system not found so can not produce number'
 
 #search the first result in the list of all system id's that is the same as the input and return the system name, added so it can also use lists
 def search_solarsystem_name(list,input):
@@ -24,6 +25,8 @@ def search_solarsystem_name(list,input):
 			if int(systems[0]) == number:
 				output.append(systems[1])
 				break
+	if output == []:
+		return 'error solar system name not recognized'
 	return output
 
 def loading_graph():
@@ -62,35 +65,55 @@ def making_graph():
 def route_planning(graph,start,end):
 	#find the path
 	cost_func = lambda u, v, e, prev_e: e['cost']
-	path = find_path(graph, int(start_system), int(end_system), cost_func=cost_func)
+	path = find_path(graph, int(start), int(end), cost_func=cost_func)
 	return path
 	
+def get_character_location(character):
+	print(character)
+	return 'E3UY-6'
+	
+def set_autopilot(systems)
+	print(systems)
 
+def main(string):
+	input = string.split(' ')
+	if input[0] == '!routeplan':
+		#route from start to finish
+		#!route startsystem finishsystem
+		system_graph = loading_graph()
+		start_system = search_solarsystem_number(solar_systems, input[1])
+		#error giving
+		if start_system.split(' ')[0] == 'error':
+			return start_system
+		end_system = search_solarsystem_number(solar_systems, input[2])
+		#error giving
+		if end_system.split(' ')[0] == 'error':
+			return end_system
+		path = route_planning(system_graph,start_system,end_system)
+		jumps = search_solarsystem_name(solar_systems, path.nodes)
+		return jumps
+	elif input[0] == '!routeset':
+		#route planning with autopilot
+		#!routeset endsystem,character
+		system_graph = loading_graph()
+		start_system = get_character_location(string.split(',')[1])
+		start_system = search_solarsystem_number(solar_systems, start_system)
+		#error handling
+		if start_system.split(' ')[0] == 'error':
+			return start_system
+		end_system = search_solarsystem_number(solar_systems, string.split(' ')[1].split(',')[0])
+		#error handling
+		if end_system.split(' ')[0] == 'error':
+			return end_system
+		path = route_planning(system_graph,start_system,end_system)
+		jumps = search_solarsystem_name(solar_systems, path.nodes)
+		return jumps
+	elif input[0] == '!routemakegraph':
+		system_graph = making_graph()
+		saving_graph(system_graph)
+	else:
+		return 'Geek you have a problem, command not recognized!'
 
 if __name__ == "__main__":
-	while True:
-		data = input('command?')
-		if data == 'q':
-			break
-		elif data == 'load':
-			system_graph = loading_graph()
-			print('loaded graph')
-		elif data == 'make':
-			system_graph = making_graph()
-			saving_graph(system_graph)
-			print('saved')
-		elif data == 'route':
-			#get the start system as name
-			data = input('Your start system?')
-			#convert start system in name to start system as ID
-			start_system = search_solarsystem_number(solar_systems, data)
-
-			#get the end system as name
-			data = input('Your end system?')
-			#convert end system in name to end system as ID
-			end_system = search_solarsystem_number(solar_systems, data)
-			#planning route
-			path = route_planning(system_graph,start_system,end_system)
-			#Make the system ID's back to system names
-			jumps = search_solarsystem_name(solar_systems, path.nodes)
-			print(jumps)
+	data = input('hello')
+	print(main(data))
