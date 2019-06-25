@@ -43,14 +43,16 @@ def set_autopilot(systems):
 	print(systems)
 
 def main(string):
-	character = string.split(',')[1]
-	string = string.split(',')[0]
 	input = string.split(' ')
 	if input[0] == '!routeplan':
+		#format !routeplan Startsystem Endsystem
 		route, edges, cost, total_jumps = route_planning(input[1],input[2])
 		return 'The shortest route is ' + str(total_jumps) + ' jumps long if you follow ' + ', '.join(route)
 	elif input[0] == '!autopilot':
-		route, edges, cost, total_jumps = route_planning(get_character_location(character),input[1])
+		character = string.split(',')[1]
+		string = string.split(',')[0].split(' ')
+		print(string)
+		route, edges, cost, total_jumps = route_planning(get_character_location(character),string[1])
 		set_autopilot(route)
 		return 'Autopilot has been set with ' + str(total_jumps) + ' to go!'
 		
